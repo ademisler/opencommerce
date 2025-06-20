@@ -323,24 +323,24 @@ export default function CreateOrder() {
             className="px-4 py-2 rounded border dark:border-gray-600"
             onClick={() => setStep(step - 1)}
           >
-            Back
+            {t('back')}
           </button>
         )}
         {step < 3 && (
           <button
-            className="ml-auto bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="ml-auto px-4 py-2 rounded-md text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
             onClick={() => {
               if (step === 1 && !validateCustomer()) return;
               setStep(step + 1);
             }}
           >
-            Next
+            {t('next')}
           </button>
         )}
         {step === 3 && (
           <button
             onClick={create}
-            className="ml-auto bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="ml-auto px-4 py-2 rounded-md text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
           >
             {t('createOrder')}
           </button>

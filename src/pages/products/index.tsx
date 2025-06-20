@@ -60,7 +60,7 @@ export default function Products() {
   const { data: categories = [] } = useSWR<Category[]>(catQuery, fetcher);
   const categoryOptions = categories.map((c) => ({ value: c.name, label: c.name }));
 
-  if (error) return <div>Error loading products.</div>;
+  if (error) return <div>{t('errorLoadingProducts')}</div>;
   if (!selected) return (
     <Layout title={t('products')}>
       <p>{t('noStore')}</p>
@@ -122,7 +122,7 @@ export default function Products() {
                   setForm(product);
                 }}
               >
-                <EditIcon className="w-4 h-4 mr-1" /> Edit
+                <EditIcon className="w-4 h-4 mr-1" /> {t('edit')}
               </button>
             </div>
             {expanded === product.id && (
@@ -142,7 +142,7 @@ export default function Products() {
             {editing === product.id && (
               <div className="mt-2 space-y-2">
                 <div>
-                  <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200">Name</label>
+                  <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200">{t('name')}</label>
                   <input
                     className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 p-1 w-full"
                     value={form.name || ''}
@@ -257,7 +257,7 @@ export default function Products() {
                   />
                   <button
                     type="button"
-                    className="ml-2 bg-blue-600 dark:bg-blue-500 text-white px-2 py-1 rounded-md flex items-center dark:border dark:border-gray-600"
+                    className="ml-2 px-2 py-1 rounded-md flex items-center text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 dark:border dark:border-gray-600"
                     onClick={() => {
                       if (!newCat) return;
                       setForm({
@@ -276,13 +276,13 @@ export default function Products() {
                       JSON.stringify((product as any)[k]) !== JSON.stringify((form as any)[k])
                     );
                     return changed.length > 0
-                      ? `Changed: ${changed.join(', ')}`
-                      : 'No changes';
+                      ? `${t('changed')}: ${changed.join(', ')}`
+                      : t('noChanges');
                   })()}
                 </p>
                 <div className="flex space-x-2">
                   <button
-                    className="bg-blue-600 dark:bg-blue-500 text-white px-2 py-1 rounded-md flex items-center space-x-1 dark:border dark:border-gray-600"
+                    className="px-2 py-1 rounded-md flex items-center space-x-1 text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 dark:border dark:border-gray-600"
                     onClick={async () => {
                       await fetch(`/api/products/${product.id}?storeId=${selected?.id}`, {
                         method: 'PUT',
@@ -292,7 +292,7 @@ export default function Products() {
                       setEditing(null);
                     }}
                   >
-                    <span>Save</span>
+                    <span>{t('save')}</span>
                   </button>
                   <button className="px-2 py-1 rounded-md dark:border dark:border-gray-600" onClick={() => setEditing(null)}>
                     {t('cancel')}

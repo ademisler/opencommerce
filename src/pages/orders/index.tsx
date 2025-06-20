@@ -46,7 +46,7 @@ export default function Orders() {
 
   const { data, error } = useSWR<Order[]>(query, fetcher);
 
-  if (error) return <div className="dark:text-gray-100">Error loading orders.</div>;
+  if (error) return <div className="dark:text-gray-100">{t('errorLoadingOrders')}</div>;
   if (!selected) return (
     <Layout title={t('orders')}>
       <p className="dark:text-gray-100">{t('noStore')}</p>
@@ -60,7 +60,7 @@ export default function Orders() {
       <h1 className="text-2xl font-bold mb-4 dark:text-gray-100">{t('orders')}</h1>
       <Link
         href="/orders/create"
-        className="inline-block mb-4 bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded"
+        className="inline-block mb-4 px-4 py-2 rounded text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
       >
         {t('createOrder')}
       </Link>

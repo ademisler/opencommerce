@@ -104,7 +104,7 @@ export default function WooCommerceIntegrations() {
             onChange={(e) => setSecret(e.target.value)}
           />
         </div>
-        <button className="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md dark:border dark:border-gray-600" onClick={addStore}>
+        <button className="px-4 py-2 rounded-md text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 dark:border dark:border-gray-600" onClick={addStore}>
           {t('addStore')}
         </button>
       </div>
@@ -146,7 +146,7 @@ export default function WooCommerceIntegrations() {
                   />
                 </div>
                 <div className="flex space-x-2">
-                  <button className="bg-blue-600 dark:bg-blue-500 text-white px-2 py-1 rounded-md dark:border dark:border-gray-600" onClick={updateStore}>{t('save')}</button>
+                  <button className="px-2 py-1 rounded-md text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 dark:border dark:border-gray-600" onClick={updateStore}>{t('save')}</button>
                   <button className="px-2 py-1 rounded-md dark:border dark:border-gray-600" onClick={() => setEditing(null)}>{t('cancel')}</button>
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function WooCommerceIntegrations() {
                   {store.name} - {store.baseUrl}
                 </span>
                 <div className="space-x-2">
-                  <button className="text-blue-600 hover:underline" onClick={() => setEditing(store)}>Edit</button>
+                  <button className="text-blue-600 hover:underline" onClick={() => setEditing(store)}>{t('edit')}</button>
                   <button className="text-red-600 hover:underline" onClick={() => removeStore(store.id)}>
                     {t('remove')}
                   </button>

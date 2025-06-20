@@ -56,7 +56,7 @@ export default function OrderDetail() {
     }
   }, [data]);
 
-  if (error) return <div>Error loading order.</div>;
+  if (error) return <div>{t('errorLoadingOrder')}</div>;
   if (!store) return <div>{t('noStore')}</div>;
   if (!data) return <div>{t('loading')}</div>;
 
@@ -73,10 +73,10 @@ export default function OrderDetail() {
           value={newStatus || data.status}
           onChange={(e) => setNewStatus(e.target.value)}
         >
-          <option value="pending">pending</option>
-          <option value="shipped">shipped</option>
-          <option value="delivered">delivered</option>
-          <option value="cancelled">cancelled</option>
+          <option value="pending">{t('pending')}</option>
+          <option value="shipped">{t('shipped')}</option>
+          <option value="delivered">{t('delivered')}</option>
+          <option value="cancelled">{t('cancelled')}</option>
         </select>
         <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200 mt-4">
           {t('shippingCompany')}
@@ -96,7 +96,7 @@ export default function OrderDetail() {
         />
         <div className="space-x-2">
           <button
-            className="bg-blue-600 dark:bg-blue-500 text-white px-3 py-1 rounded dark:border dark:border-gray-600"
+            className="px-3 py-1 rounded text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 dark:border dark:border-gray-600"
             onClick={async () => {
               await fetch(`/api/orders/${data.id}?storeId=${store.id}`, {
                 method: 'PUT',

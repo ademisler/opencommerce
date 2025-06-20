@@ -51,7 +51,7 @@ function StoreCard({ store }: { store: Store }) {
           {t('testConnection')}
         </button>
         <Link href="/integrations/woocommerce" className="text-sm underline">
-          Manage
+          {t('manage')}
         </Link>
       </div>
     </div>

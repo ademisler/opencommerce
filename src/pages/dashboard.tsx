@@ -127,9 +127,9 @@ export default function Dashboard() {
           value={range}
           onChange={(e) => setRange(e.target.value as '7' | '30' | 'custom')}
         >
-          <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="custom">Custom</option>
+          <option value="7">{t('last7Days')}</option>
+          <option value="30">{t('last30Days')}</option>
+          <option value="custom">{t('custom')}</option>
         </select>
         {range === 'custom' && (
           <>

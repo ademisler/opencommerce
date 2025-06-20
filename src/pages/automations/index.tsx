@@ -90,7 +90,7 @@ export default function Automations() {
         ))}
       </div>
       <button
-        className="flex items-center bg-blue-600 dark:bg-blue-500 text-white px-3 py-2 rounded mb-4"
+        className="flex items-center px-3 py-2 rounded mb-4 text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
         onClick={() => openModal()}
       >
         <PlusIcon className="w-4 h-4 mr-1" /> {t('addAutomation')}
@@ -163,7 +163,7 @@ export default function Automations() {
                 {t('cancel')}
               </button>
               <button
-                className="bg-blue-600 dark:bg-blue-500 text-white px-3 py-1 rounded"
+                className="px-3 py-1 rounded text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
                 onClick={save}
               >
                 {t('save')}

@@ -74,7 +74,7 @@ export default function Login() {
             {error && <p className="mb-4 text-red-400 text-center text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="relative min-h-[160px] flex items-center">
               <div className={`form-step w-full space-y-6${step === 1 ? '' : ' hidden'}`}> 
-                <p className="text-center text-gray-300 text-sm sm:text-base">Continue to access your account.</p>
+                <p className="text-center text-gray-300 text-sm sm:text-base">{t('continueAccess')}</p>
                 <div>
                   <label htmlFor="email" className="sr-only">{t('email')}</label>
                   <input
@@ -92,13 +92,13 @@ export default function Login() {
                   onClick={handleContinue}
                   className="w-full py-3 bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 text-white font-bold rounded-lg shadow-lg shadow-rose-500/30 hover:shadow-rose-400/40 transition-all duration-300 transform hover:scale-102"
                 >
-                  Continue
+                  {t('continue')}
                 </button>
               </div>
               <div className={`form-step w-full space-y-6${step === 2 ? '' : ' hidden'}`}> 
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <p className="text-gray-200 text-sm truncate pr-4">{email}</p>
-                  <button type="button" onClick={handleBack} className="text-sm text-rose-300 hover:text-white font-semibold flex-shrink-0">Change</button>
+                  <button type="button" onClick={handleBack} className="text-sm text-rose-300 hover:text-white font-semibold flex-shrink-0">{t('change')}</button>
                 </div>
                 <div>
                   <label htmlFor="password" className="sr-only">{t('password')}</label>

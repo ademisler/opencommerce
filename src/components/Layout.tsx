@@ -36,9 +36,9 @@ const Layout: React.FC<Props> = ({ children, title }) => {
       <Head>
         <title>{title ? `${title} - Fulexo` : 'Fulexo'}</title>
       </Head>
-      <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-gray-900 dark:bg-slate-950 dark:text-gray-100">
       {session && (
-      <header className="bg-gray-800 text-white dark:bg-gray-700">
+      <header className="text-white bg-gradient-to-r from-rose-600 to-orange-500 dark:from-rose-700 dark:to-orange-600">
         <nav className="flex justify-between items-center container mx-auto p-4 relative">
           <button
             className="mr-4 block md:hidden"
@@ -102,7 +102,7 @@ const Layout: React.FC<Props> = ({ children, title }) => {
           </div>
         </nav>
         {navOpen && (
-          <div className="md:hidden flex flex-col space-y-2 px-4 pb-4 bg-gray-800 text-white dark:bg-gray-700">
+          <div className="md:hidden flex flex-col space-y-2 px-4 pb-4 text-white bg-gradient-to-r from-rose-600 to-orange-500 dark:from-rose-700 dark:to-orange-600">
             <Link href="/dashboard" className="hover:underline" onClick={() => setNavOpen(false)}>{t('dashboard')}</Link>
             <Link href="/products" className="hover:underline" onClick={() => setNavOpen(false)}>{t('products')}</Link>
             <Link href="/orders" className="hover:underline" onClick={() => setNavOpen(false)}>{t('orders')}</Link>
