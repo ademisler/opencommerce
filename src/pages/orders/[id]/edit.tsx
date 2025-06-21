@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useI18n } from '../../../lib/i18n';
 import useStores from '../../../lib/hooks/useStores';
 import { PlusIcon, TrashIcon } from '../../../components/Icons';
+import Loader from '../../../components/Loader';
 
 interface Store {
   id: number;
@@ -226,11 +227,16 @@ export default function EditOrder() {
     return null;
   }
   if (!store) return <div>{t('noStore')}</div>;
-  if (!data) return <div>{t('loading')}</div>;
+  if (!data)
+    return (
+      <Layout title={`${t('order')} #${id} - ${t('edit')}`}> 
+        <Loader className="py-8" />
+      </Layout>
+    );
 
   return (
     <Layout title={`${t('order')} #${id} - ${t('edit')}`}> 
-      <div className="lg:flex lg:gap-4">
+      <div className="lg:flex lg:gap-4 space-y-6 lg:space-y-0">
         <div className="flex-1 space-y-6">
           <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
@@ -261,6 +267,7 @@ export default function EditOrder() {
 
           <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Products</h2>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm mb-2">
               <thead>
                 <tr className="text-left border-b border-gray-200 dark:border-gray-700">
@@ -295,6 +302,7 @@ export default function EditOrder() {
                 ))}
               </tbody>
             </table>
+            </div>
             <div className="flex items-center space-x-2 mt-2">
               <select className="flex-1" value={newProductId} onChange={(e) => setNewProductId(Number(e.target.value))}>
                 <option value="">Select product</option>
@@ -347,7 +355,7 @@ export default function EditOrder() {
           </div>
         </div>
 
-        <aside className="lg:w-80 space-y-6 mt-6 lg:mt-0">
+        <aside className="lg:w-80 w-full space-y-6 mt-6 lg:mt-0">
           <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Order History</h2>
             <ul className="text-sm space-y-1">
