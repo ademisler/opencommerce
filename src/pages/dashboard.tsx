@@ -123,7 +123,7 @@ export default function Dashboard() {
       </div>
       <div className="mb-4 space-x-2">
         <select
-          className="border p-1"
+          className="border p-1 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
           value={range}
           onChange={(e) => setRange(e.target.value as '7' | '30' | 'custom')}
         >
@@ -135,13 +135,13 @@ export default function Dashboard() {
           <>
             <input
               type="date"
-              className="border p-1"
+              className="border p-1 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
               value={customStart}
               onChange={(e) => setCustomStart(e.target.value)}
             />
             <input
               type="date"
-              className="border p-1"
+              className="border p-1 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
               value={customEnd}
               onChange={(e) => setCustomEnd(e.target.value)}
             />

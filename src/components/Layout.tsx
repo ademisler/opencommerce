@@ -81,9 +81,6 @@ const Layout: React.FC<Props> = ({ children, title }) => {
                 />
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 bg-white text-black rounded shadow-md w-40 z-10">
-                    <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
-                      {t('editProfile')}
-                    </Link>
                     <button
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       onClick={() => {

@@ -7,6 +7,7 @@ import { fetcher } from '../../lib/fetcher';
 import { useI18n } from '../../lib/i18n';
 import useStores from '../../lib/hooks/useStores';
 import { europeanCountries } from '../../utils/europeanCountries';
+import Select from 'react-select';
 import { PlusIcon, TrashIcon } from '../../components/Icons';
 
 interface Store {
@@ -39,6 +40,7 @@ export default function CreateOrder() {
   const [items, setItems] = useState<Record<number, number>>({});
   const [productSearch, setProductSearch] = useState('');
   const { t } = useI18n();
+  const countryOptions = europeanCountries.map((c) => ({ value: c.code, label: c.name }));
   const [customer, setCustomer] = useState({
     first_name: '',
     last_name: '',
@@ -90,7 +92,7 @@ export default function CreateOrder() {
       <h1 className="text-2xl font-bold mb-4">{t('createOrder')}</h1>
       <div className="mb-4">
         <select
-          className="border p-2"
+          className="border p-2 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
           value={selected?.id ?? ''}
           onChange={(e) => {
             const store = stores.find((s) => s.id === Number(e.target.value));
@@ -141,18 +143,14 @@ export default function CreateOrder() {
             <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200">
               {t('country')}
             </label>
-            <select
-              className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 p-2 w-full"
-              value={customer.country}
-              onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
-            >
-              <option value="">{t('country')}</option>
-              {europeanCountries.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <Select
+              className="text-black"
+              options={countryOptions}
+              value={countryOptions.find((o) => o.value === customer.country) || null}
+              onChange={(val: any) =>
+                setCustomer({ ...customer, country: val ? val.value : '' })
+              }
+            />
           </div>
           <div className="md:col-span-2">
             <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200">
