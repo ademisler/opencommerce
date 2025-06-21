@@ -2,23 +2,6 @@ import Layout from '../components/Layout';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useTheme } from '../lib/theme';
-
-// Recharts components depend on browser APIs, so load them dynamically and
-// relax type checking since the package isn't installed in this environment.
-const PieChart = dynamic<any>(() => import('recharts').then(m => ({ default: m.PieChart })), { ssr: false });
-const Pie = dynamic<any>(() => import('recharts').then(m => ({ default: m.Pie })), { ssr: false });
-const Cell = dynamic<any>(() => import('recharts').then(m => ({ default: m.Cell })), { ssr: false });
-const ResponsiveContainer = dynamic<any>(() => import('recharts').then(m => ({ default: m.ResponsiveContainer })), { ssr: false });
-const LineChart = dynamic<any>(() => import('recharts').then(m => ({ default: m.LineChart })), { ssr: false });
-const Line = dynamic<any>(() => import('recharts').then(m => ({ default: m.Line })), { ssr: false });
-const BarChart = dynamic<any>(() => import('recharts').then(m => ({ default: m.BarChart })), { ssr: false });
-const Bar = dynamic<any>(() => import('recharts').then(m => ({ default: m.Bar })), { ssr: false });
-const XAxis = dynamic<any>(() => import('recharts').then(m => ({ default: m.XAxis })), { ssr: false });
-const YAxis = dynamic<any>(() => import('recharts').then(m => ({ default: m.YAxis })), { ssr: false });
-const Tooltip = dynamic<any>(() => import('recharts').then(m => ({ default: m.Tooltip })), { ssr: false });
-const CartesianGrid = dynamic<any>(() => import('recharts').then(m => ({ default: m.CartesianGrid })), { ssr: false });
 import useSWR from 'swr';
 import { fetcher } from '../lib/fetcher';
 import { useI18n } from '../lib/i18n';
@@ -33,7 +16,6 @@ export default function Dashboard() {
   const [range, setRange] = useState<'7' | '30' | 'custom'>('7');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -67,21 +49,6 @@ export default function Dashboard() {
   const productCount = productData?.total ?? (products?.length ?? 0);
   const totalStock = products?.reduce((sum, p) => sum + (p.stock ?? 0), 0) ?? 0;
 
-  const stockData = (products || []).map((p) => ({ name: p.name, value: p.stock }));
-  const dailyData = Object.entries(
-    filteredOrders.reduce((acc: Record<string, number>, o: any) => {
-      const d = new Date(o.date_created).toISOString().slice(0, 10);
-      acc[d] = (acc[d] || 0) + 1;
-      return acc;
-    }, {})
-  ).map(([date, count]) => ({ date, count }));
-  const monthlyData = Object.entries(
-    filteredOrders.reduce((acc: Record<string, number>, o: any) => {
-      const d = new Date(o.date_created).toISOString().slice(0, 7);
-      acc[d] = (acc[d] || 0) + (o.total ?? 0);
-      return acc;
-    }, {})
-  ).map(([month, total]) => ({ month, total }));
 
   useEffect(() => {
     if (stores && stores.length > 0) {
@@ -168,42 +135,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="h-64">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={stockData} dataKey="value" nameKey="name" outerRadius={80}>
-                {stockData.map((_, i) => (
-                  <Cell key={i} fill={theme === 'dark' ? `hsl(${i * 50},70%,60%)` : `hsl(${i * 50},70%,50%)`} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="h-64">
-          <ResponsiveContainer>
-            <LineChart data={dailyData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" stroke="currentColor" />
-              <YAxis stroke="currentColor" />
-              <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#3b82f6" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="h-64">
-          <ResponsiveContainer>
-            <BarChart data={monthlyData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" stroke="currentColor" />
-              <YAxis stroke="currentColor" />
-              <Tooltip />
-              <Bar dataKey="total" fill="#10b981" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {/* Charts were removed */}
       <p>{t('welcome')}</p>
     </Layout>
   );
