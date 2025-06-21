@@ -36,20 +36,6 @@ interface OrderData {
   date_created: string;
   shipping_company?: string;
   tracking_number?: string;
-  customer?: string;
-  payment_status?: string;
-  shipping_status?: string;
-  items?: {
-    product_id: number;
-    name: string;
-    quantity: number;
-    price: number;
-  }[];
-  customer_name?: string;
-  customer_email?: string;
-  customer_phone?: string;
-  billing?: string;
-  delivery?: string;
 }
 
 export default function EditOrder() {
@@ -91,26 +77,6 @@ export default function EditOrder() {
   useEffect(() => {
     if (data) {
       setOrderStatus(data.status);
-      setPaymentStatus(data.payment_status || 'paid');
-      setShippingStatus(data.shipping_status || 'pending');
-      if (Array.isArray(data.items)) {
-        const loaded = data.items.map((it) => ({
-          productId: it.product_id,
-          name: it.name,
-          quantity: it.quantity,
-          price: it.price,
-        }));
-        setItems(loaded);
-      }
-      setCustomer({
-        name: data.customer_name || data.customer || '',
-        email: data.customer_email || '',
-        phone: data.customer_phone || '',
-        billing: data.billing || '',
-        delivery: data.delivery || '',
-      });
-      setCarrier(data.shipping_company || '');
-      setTracking(data.tracking_number || '');
     }
   }, [data]);
 
