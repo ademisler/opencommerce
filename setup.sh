@@ -18,7 +18,7 @@ cat <<'EOM'
 Please edit the .env.local file and fill in your credentials:
 - Supabase keys: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 - WooCommerce API credentials: WOOCOMMERCE_API_URL, WOOCOMMERCE_API_KEY, WOOCOMMERCE_API_SECRET
-- Additional keys for Trendyol, Hepsiburada, Shopify if needed
+ - Additional keys for other platforms if needed
 
 After filling in the environment variables, run:
 
