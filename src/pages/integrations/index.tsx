@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 function StoreCard({ store }: { store: Store }) {
   const { t } = useI18n();
-  const { data: products } = useProducts(store.id);
+  const { data: productData } = useProducts(store.id);
   const { data: orders } = useOrders(store.id);
   const [status, setStatus] = useState<'connected' | 'disconnected' | null>(null);
   const [testing, setTesting] = useState(false);
@@ -40,7 +40,7 @@ function StoreCard({ store }: { store: Store }) {
         )}
       </div>
       <p className="text-sm">{t('lastSync')}: N/A</p>
-      <p className="text-sm">{t('productsLabel')}: {products ? products.length : '-'}</p>
+      <p className="text-sm">{t('productsLabel')}: {productData ? productData.total : '-'}</p>
       <p className="text-sm">{t('orders')}: {orders ? orders.length : '-'}</p>
       <div className="flex justify-between items-center pt-2">
         <button

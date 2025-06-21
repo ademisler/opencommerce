@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { WooConfig, fetchProducts } from '../../../lib/integrations/woocommerceService';
+import { WooConfig, fetchProduct } from '../../../lib/integrations/woocommerceService';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 import { sbRequest } from '../../../lib/supabase';
@@ -41,9 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'GET') {
-    const products = await fetchProducts(config);
-    const product = products.find((p: any) => p.id === Number(id));
-    return product ? res.status(200).json(product) : res.status(404).json({ error: 'Not found' });
+    try {
+      const product = await fetchProduct(Number(id), config);
+      return res.status(200).json(product);
+    } catch (e) {
+      return res.status(404).json({ error: 'Not found' });
+    }
   }
 
   res.setHeader('Allow', ['GET', 'PUT']);

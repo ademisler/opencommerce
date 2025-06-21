@@ -48,7 +48,8 @@ export default function Dashboard() {
   const productsQuery = selected ? `/api/products?storeId=${selected.id}` : null;
 
   const { data: orders } = useSWR<any[]>(ordersQuery, fetcher);
-  const { data: products } = useSWR<any[]>(productsQuery, fetcher);
+  const { data: productData } = useSWR<{ products: any[]; total: number }>(productsQuery, fetcher);
+  const products = productData?.products;
   const rangeStart = (() => {
     if (range === '7') return new Date(Date.now() - 7 * 86400000);
     if (range === '30') return new Date(Date.now() - 30 * 86400000);
@@ -63,7 +64,7 @@ export default function Dashboard() {
 
   const orderCount = filteredOrders.length;
   const totalRevenue = filteredOrders.reduce((sum, o) => sum + (o.total ?? 0), 0);
-  const productCount = products?.length ?? 0;
+  const productCount = productData?.total ?? (products?.length ?? 0);
   const totalStock = products?.reduce((sum, p) => sum + (p.stock ?? 0), 0) ?? 0;
 
   const stockData = (products || []).map((p) => ({ name: p.name, value: p.stock }));

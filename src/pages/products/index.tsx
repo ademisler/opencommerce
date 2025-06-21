@@ -2,6 +2,7 @@ import Layout from '../../components/Layout';
 import useSWR from 'swr';
 import { fetcher } from '../../lib/fetcher';
 import { EditIcon, PlusIcon } from '../../components/Icons';
+import Loader from '../../components/Loader';
 import dynamic from 'next/dynamic';
 
 // react-select relies on browser APIs that aren't available during
@@ -61,23 +62,24 @@ export default function Products() {
 
   if (status === 'loading' || status === 'unauthenticated') return null;
 
-  const query = selected ? `/api/products?storeId=${selected.id}` : null;
+  const pageSize = 20;
+  const query = selected
+    ? `/api/products?storeId=${selected.id}&page=${page}&perPage=${pageSize}&search=${encodeURIComponent(search)}`
+    : null;
 
-  const { data, error } = useSWR<Product[]>(query, fetcher);
+  const { data, error } = useSWR<{ products: Product[]; total: number }>(
+    query,
+    fetcher
+  );
   const catQuery = selected ? `/api/categories?storeId=${selected.id}` : null;
   const { data: categories = [] } = useSWR<Category[]>(catQuery, fetcher);
   const categoryOptions = categories.map((c) => ({ value: c.name, label: c.name }));
+  const totalPages = useMemo(() => Math.ceil((data?.total || 0) / pageSize) || 1, [data?.total]);
+  const pageProducts = data?.products || [];
 
-  const filtered = useMemo(
-    () => (data || []).filter((p) => p.name.toLowerCase().includes(search.toLowerCase())),
-    [data, search]
-  );
-  const pageSize = 20;
-  const totalPages = useMemo(() => Math.ceil(filtered.length / pageSize) || 1, [filtered.length]);
-  const pageProducts = useMemo(
-    () => filtered.slice((page - 1) * pageSize, page * pageSize),
-    [filtered, page]
-  );
+  useEffect(() => {
+    setPage(1);
+  }, [search, selected]);
 
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
@@ -89,8 +91,6 @@ export default function Products() {
       <p>{t('noStore')}</p>
     </Layout>
   );
-  if (!data) return <div>{t('loading')}</div>;
-
   return (
     <Layout title={t('products')}>
       <h1 className="text-2xl font-bold mb-4">{t('products')}</h1>
@@ -121,7 +121,10 @@ export default function Products() {
         />
       </div>
       <ul className="space-y-2">
-        {pageProducts.map((product) => (
+        {!data ? (
+          <Loader className="py-8" />
+        ) : (
+          pageProducts.map((product) => (
           <li key={product.id} className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800">
             <div className="flex items-center space-x-4">
               <img
@@ -330,6 +333,7 @@ export default function Products() {
             )}
           </li>
         ))}
+        )}
       </ul>
       {totalPages > 1 && (
         <div className="mt-4 flex justify-center space-x-2">
