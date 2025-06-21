@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Layout from '../../components/Layout';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -9,6 +9,7 @@ import useStores from '../../lib/hooks/useStores';
 import { europeanCountries } from '../../utils/europeanCountries';
 import Select from 'react-select';
 import { PlusIcon, TrashIcon } from '../../components/Icons';
+import Loader from '../../components/Loader';
 
 interface Store {
   id: number;
@@ -39,6 +40,8 @@ export default function CreateOrder() {
   const [selected, setSelected] = useState<Store | null>(null);
   const [items, setItems] = useState<Record<number, number>>({});
   const [productSearch, setProductSearch] = useState('');
+  const [productPage, setProductPage] = useState(1);
+  const [productMap, setProductMap] = useState<Record<number, Product>>({});
   const { t } = useI18n();
   const countryOptions = europeanCountries.map((c) => ({ value: c.code, label: c.name }));
   const [customer, setCustomer] = useState({
@@ -68,8 +71,32 @@ export default function CreateOrder() {
     if (stores && stores.length > 0) setSelected(stores[0]);
   }, [stores]);
 
-  const query = selected ? `/api/products?storeId=${selected.id}` : null;
-  const { data } = useSWR<Product[]>(query, fetcher);
+  useEffect(() => {
+    setProductPage(1);
+  }, [productSearch, selected]);
+
+  const productPageSize = 20;
+  const query = selected
+    ? `/api/products?storeId=${selected.id}&page=${productPage}&perPage=${productPageSize}&search=${encodeURIComponent(productSearch)}`
+    : null;
+  const { data } = useSWR<{ products: Product[]; total: number }>(query, fetcher);
+  const totalProductPages = useMemo(
+    () => Math.ceil((data?.total || 0) / productPageSize) || 1,
+    [data?.total]
+  );
+  const products = data?.products || [];
+
+  useEffect(() => {
+    if (products.length) {
+      setProductMap((m) => {
+        const updated = { ...m };
+        products.forEach((p) => {
+          updated[p.id] = p;
+        });
+        return updated;
+      });
+    }
+  }, [products]);
 
   const create = async () => {
     if (!selected) return;
@@ -238,17 +265,15 @@ export default function CreateOrder() {
             />
           </div>
           {!data ? (
-            <p>{t('loadingProducts')}</p>
+            <Loader className="py-8" />
           ) : (
             <div className="space-y-2 pb-64">
-              {data
-                .filter((p) => p.name.toLowerCase().includes(productSearch.toLowerCase()))
-                .map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center space-x-4 border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800"
-                  >
-                    <img src={p.image} alt={p.name} className="w-16 h-16 object-cover" />
+              {products.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex items-center space-x-4 border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800"
+                >
+                  <img src={p.image} alt={p.name} className="w-16 h-16 object-cover" />
                     <div className="flex-1">
                       <p className="font-medium">{p.name}</p>
                       <p className="text-sm text-gray-600">Stock: {p.stock}</p>
@@ -270,6 +295,27 @@ export default function CreateOrder() {
                     </button>
                   </div>
                 ))}
+              {totalProductPages > 1 && (
+                <div className="flex justify-center space-x-2 mt-2">
+                  <button
+                    className="px-2 py-1 rounded border dark:border-gray-600"
+                    disabled={productPage === 1}
+                    onClick={() => setProductPage((p) => Math.max(1, p - 1))}
+                  >
+                    {t('back')}
+                  </button>
+                  <span className="px-2 py-1">
+                    {productPage} / {totalProductPages}
+                  </span>
+                  <button
+                    className="px-2 py-1 rounded border dark:border-gray-600"
+                    disabled={productPage === totalProductPages}
+                    onClick={() => setProductPage((p) => Math.min(totalProductPages, p + 1))}
+                  >
+                    {t('next')}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </>
@@ -282,7 +328,7 @@ export default function CreateOrder() {
             {Object.entries(items)
               .filter(([, qty]) => qty > 0)
               .map(([id, qty]) => {
-                const prod = data?.find((d) => d.id === Number(id));
+                const prod = productMap[Number(id)];
                 return (
                   <li key={id} className="flex justify-between items-center">
                     <span>
@@ -307,7 +353,7 @@ export default function CreateOrder() {
             Total:
             {(
               Object.entries(items).reduce((sum, [id, qty]) => {
-                const prod = data?.find((p) => p.id === Number(id));
+                const prod = productMap[Number(id)];
                 return sum + (prod?.price || 0) * qty;
               }, 0)
             ).toFixed(2)}

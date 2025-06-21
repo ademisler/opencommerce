@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
-  fetchProducts as fetchWooProducts,
+  fetchProductsPage as fetchWooProductsPage,
   WooConfig,
 } from '../../lib/integrations/woocommerceService';
 import { getServerSession } from 'next-auth/next';
@@ -49,7 +49,7 @@ export type Product = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Product[] | { error: string }>
+  res: NextApiResponse<{ products: Product[]; total: number } | { error: string }>
 ) {
   try {
     const session = await getServerSession(req, res, authOptions);
@@ -79,7 +79,18 @@ export default async function handler(
       consumerSecret: store.secret,
     };
 
-    const wooProducts = await fetchWooProducts(config);
+    const { page = '1', perPage = '20', search = '' } = req.query as {
+      page?: string;
+      perPage?: string;
+      search?: string;
+    };
+
+    const { items: wooProducts, total } = await fetchWooProductsPage(
+      Number(page),
+      Number(perPage),
+      search as string,
+      config
+    );
     const products: Product[] = wooProducts.map((p: any) => ({
       id: p.id,
       name: p.name,
@@ -96,7 +107,7 @@ export default async function handler(
       price: parseFloat(p.price) || 0,
       ean: p.sku || '',
     }));
-    res.status(200).json(products);
+    res.status(200).json({ products, total });
   } catch (error) {
     console.error('Failed to fetch products from WooCommerce:', error);
     if (
@@ -105,7 +116,7 @@ export default async function handler(
     ) {
       res.status(400).json({ error: error.message });
     } else {
-      res.status(200).json(fallbackProducts);
+      res.status(200).json({ products: fallbackProducts, total: fallbackProducts.length });
     }
   }
 }

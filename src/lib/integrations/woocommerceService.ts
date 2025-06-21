@@ -92,6 +92,37 @@ export async function fetchProducts(config?: Partial<WooConfig>): Promise<any[]>
   return fetchAll('products', config);
 }
 
+export async function fetchProductsPage(
+  page: number,
+  perPage: number,
+  search = '',
+  config?: Partial<WooConfig>
+): Promise<{ items: any[]; total: number }> {
+  const cfg = getConfig(config);
+  const res = await fetch(
+    `${cfg.baseUrl}/wp-json/wc/v3/products?per_page=${perPage}&page=${page}&search=${encodeURIComponent(search)}`,
+    {
+      headers: {
+        Authorization: authHeader(cfg),
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`WooCommerce API error: ${res.status}`);
+  }
+  const total = Number(res.headers.get('X-WP-Total') || '0');
+  const items = await res.json();
+  return { items, total };
+}
+
+export async function fetchProduct(
+  id: number,
+  config?: Partial<WooConfig>
+): Promise<any> {
+  return request<any>(`products/${id}`, config);
+}
+
 export async function fetchCategories(
   config?: Partial<WooConfig>
 ): Promise<any[]> {
