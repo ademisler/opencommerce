@@ -90,7 +90,7 @@ export default function Orders() {
               className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800"
             >
               <Link
-                href={`/orders/${order.id}`}
+                href={`/orders/${order.id}?storeId=${selected?.id}`}
                 className="dark:text-gray-100"
               >
                 {t('order')} #{order.id}

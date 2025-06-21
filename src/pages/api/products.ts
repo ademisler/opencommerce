@@ -13,6 +13,7 @@ const fallbackProducts: Product[] = [
     name: 'Example Product',
     stock: 10,
     image: 'https://via.placeholder.com/80',
+    description: 'Example description',
     categories: [],
     weight: '',
     dimensions: { length: '', width: '', height: '' },
@@ -24,6 +25,7 @@ const fallbackProducts: Product[] = [
     name: 'Demo Product',
     stock: 5,
     image: 'https://via.placeholder.com/80',
+    description: 'Demo description',
     categories: [],
     weight: '',
     dimensions: { length: '', width: '', height: '' },
@@ -37,6 +39,7 @@ export type Product = {
   name: string;
   stock: number;
   image: string;
+  description: string;
   categories: string[];
   weight: string;
   dimensions: { length: string; width: string; height: string };
@@ -82,6 +85,7 @@ export default async function handler(
       name: p.name,
       stock: p.stock_quantity ?? 0,
       image: p.images?.[0]?.src || 'https://via.placeholder.com/80',
+      description: p.description || '',
       categories: (p.categories || []).map((c: any) => c.name),
       weight: p.weight || '',
       dimensions: {

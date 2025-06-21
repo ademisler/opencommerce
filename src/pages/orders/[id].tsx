@@ -19,7 +19,7 @@ interface Store {
 export default function OrderDetail() {
   const { status } = useSession();
   const router = useRouter();
-  const { id } = router.query;
+  const { id, storeId } = router.query as { id?: string; storeId?: string };
   const { data: stores = [] } = useStores();
   const [store, setStore] = useState<Store | null>(null);
   const { t } = useI18n();
@@ -30,8 +30,13 @@ export default function OrderDetail() {
   }
 
   useEffect(() => {
-    if (stores && stores.length > 0) setStore(stores[0]);
-  }, [stores]);
+    if (stores && stores.length > 0) {
+      const selected = storeId
+        ? stores.find((s) => s.id === Number(storeId))
+        : stores[0];
+      setStore(selected || null);
+    }
+  }, [stores, storeId]);
 
   const query =
     id && store ? `/api/orders/${id}?storeId=${store.id}` : null;

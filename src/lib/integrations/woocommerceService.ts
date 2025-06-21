@@ -69,18 +69,37 @@ async function request<T>(
   return res.json();
 }
 
+async function fetchAll(
+  endpoint: string,
+  config?: Partial<WooConfig>
+): Promise<any[]> {
+  const perPage = 100;
+  let page = 1;
+  let results: any[] = [];
+  while (true) {
+    const items = await request<any[]>(
+      `${endpoint}?per_page=${perPage}&page=${page}`,
+      config
+    );
+    results = results.concat(items);
+    if (items.length < perPage) break;
+    page += 1;
+  }
+  return results;
+}
+
 export async function fetchProducts(config?: Partial<WooConfig>): Promise<any[]> {
-  return request<any[]>('products', config);
+  return fetchAll('products', config);
 }
 
 export async function fetchCategories(
   config?: Partial<WooConfig>
 ): Promise<any[]> {
-  return request<any[]>('products/categories', config);
+  return fetchAll('products/categories', config);
 }
 
 export async function fetchOrders(config?: Partial<WooConfig>): Promise<any[]> {
-  return request<any[]>('orders', config);
+  return fetchAll('orders', config);
 }
 
 export interface OrderItem {

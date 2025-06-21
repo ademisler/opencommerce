@@ -91,6 +91,24 @@ export default function Dashboard() {
   return (
     <Layout title={t('dashboard')}>
       <h1 className="text-2xl font-bold mb-4">{t('dashboard')}</h1>
+      {stores.length > 1 && (
+        <div className="mb-4">
+          <select
+            className="border p-1 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+            value={selected?.id ?? ''}
+            onChange={(e) => {
+              const store = stores.find((s) => s.id === Number(e.target.value));
+              setSelected(store || null);
+            }}
+          >
+            {stores.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       {stores.length > 0 && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">{t('connectedStores')}</h2>

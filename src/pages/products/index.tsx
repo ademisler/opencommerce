@@ -15,6 +15,7 @@ interface Product {
   name: string;
   stock: number;
   image: string;
+  description: string;
   categories: string[];
   weight: string;
   dimensions: { length: string; width: string; height: string };
@@ -39,6 +40,7 @@ export default function Products() {
   const [editing, setEditing] = useState<number | null>(null);
   const [form, setForm] = useState<Partial<Product>>({});
   const [newCat, setNewCat] = useState('');
+  const [page, setPage] = useState(1);
   const { t } = useI18n();
 
   useEffect(() => {
@@ -71,6 +73,13 @@ export default function Products() {
   const filtered = data.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
+  const pageSize = 20;
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+  const pageProducts = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [totalPages, page]);
 
   return (
     <Layout title={t('products')}>
@@ -102,7 +111,7 @@ export default function Products() {
         />
       </div>
       <ul className="space-y-2">
-        {filtered.map((product) => (
+        {pageProducts.map((product) => (
           <li key={product.id} className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800">
             <div className="flex items-center space-x-4">
               <img
@@ -131,6 +140,7 @@ export default function Products() {
                 <div className="prose text-sm mt-2">
                   <p>Categories: {product.categories.join(', ') || '-'}</p>
                   <p>Price: {product.price}</p>
+                  <p>Description: {product.description || '-'}</p>
                   <p>EAN: {product.ean}</p>
                   <p>Weight: {product.weight}</p>
                   <p>
@@ -173,6 +183,14 @@ export default function Products() {
                     className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 p-1 w-full"
                     value={form.price ?? 0}
                     onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 text-sm text-gray-700 dark:text-gray-200">{t('description')}</label>
+                  <textarea
+                    className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 p-1 w-full"
+                    value={form.description || ''}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
                   />
                 </div>
                 <div>
@@ -303,6 +321,27 @@ export default function Products() {
           </li>
         ))}
       </ul>
+      {totalPages > 1 && (
+        <div className="mt-4 flex justify-center space-x-2">
+          <button
+            className="px-2 py-1 rounded dark:border dark:border-gray-600"
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            {t('back')}
+          </button>
+          <span className="px-2 py-1">
+            {page} / {totalPages}
+          </span>
+          <button
+            className="px-2 py-1 rounded dark:border dark:border-gray-600"
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            {t('next')}
+          </button>
+        </div>
+      )}
     </Layout>
   );
 }
