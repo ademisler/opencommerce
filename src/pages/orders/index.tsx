@@ -20,6 +20,7 @@ interface Order {
   id: number;
   status: string;
   total: number;
+  customer?: string;
 }
 
 
@@ -93,7 +94,7 @@ export default function Orders() {
                 href={`/orders/${order.id}?storeId=${selected?.id}`}
                 className="dark:text-gray-100"
               >
-                {t('order')} #{order.id}
+                {t('order')} #{order.id} - {order.customer}
               </Link>
             </li>
           ))}

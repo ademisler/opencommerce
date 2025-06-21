@@ -47,6 +47,7 @@ export default function OrderDetail() {
     total: number;
     shipping_company?: string;
     tracking_number?: string;
+    customer?: string;
   }
 
   const { data, mutate, error } = useSWR<OrderData>(query, fetcher);

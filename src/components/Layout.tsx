@@ -52,7 +52,6 @@ const Layout: React.FC<Props> = ({ children, title }) => {
             <Link href="/products" className="hover:underline">{t('products')}</Link>
             <Link href="/orders" className="hover:underline">{t('orders')}</Link>
             <Link href="/integrations" className="hover:underline">{t('integrations')}</Link>
-            <Link href="/automations" className="hover:underline">{t('automations')}</Link>
           </div>
           <div className="flex items-center ml-auto pr-4 gap-2">
             <select
@@ -104,7 +103,6 @@ const Layout: React.FC<Props> = ({ children, title }) => {
             <Link href="/products" className="hover:underline" onClick={() => setNavOpen(false)}>{t('products')}</Link>
             <Link href="/orders" className="hover:underline" onClick={() => setNavOpen(false)}>{t('orders')}</Link>
             <Link href="/integrations" className="hover:underline" onClick={() => setNavOpen(false)}>{t('integrations')}</Link>
-            <Link href="/automations" className="hover:underline" onClick={() => setNavOpen(false)}>{t('automations')}</Link>
           </div>
         )}
       </header>
