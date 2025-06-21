@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useI18n } from '../../lib/i18n';
 import useStores from '../../lib/hooks/useStores';
+import Loader from '../../components/Loader';
 
 interface Store {
   id: number;
@@ -53,7 +54,12 @@ export default function Orders() {
       <p className="dark:text-gray-100">{t('noStore')}</p>
     </Layout>
   );
-  if (!data) return <div className="dark:text-gray-100">{t('loading')}</div>;
+  if (!data)
+    return (
+      <Layout title={t('orders')}>
+        <Loader className="py-8" />
+      </Layout>
+    );
 
   return (
     <Layout title={t('orders')}>
