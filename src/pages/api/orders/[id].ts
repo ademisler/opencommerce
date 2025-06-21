@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
-  fetchOrders as fetchWooOrders,
+  fetchOrder as fetchWooOrder,
   WooConfig,
 } from '../../../lib/integrations/woocommerceService';
 import { getServerSession } from 'next-auth/next';
@@ -118,8 +118,7 @@ export default async function handler(
         });
     }
 
-    const wooOrders = await fetchWooOrders(config);
-    const order = wooOrders.find((o: any) => o.id === Number(id));
+    const order = await fetchWooOrder(Number(id), config);
     if (order) {
       const result: Order = {
         id: order.id,
