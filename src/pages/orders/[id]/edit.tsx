@@ -68,7 +68,13 @@ export default function EditOrder() {
   }, [stores, storeId]);
 
   const query = id && store ? `/api/orders/${id}?storeId=${store.id}` : null;
-  const { data } = useSWR<OrderData>(query, fetcher);
+  const { data, mutate } = useSWR<OrderData>(query, fetcher);
+
+  const carriersQuery = store ? `/api/carriers?storeId=${store.id}` : null;
+  const { data: carriers = [] } = useSWR<string[]>(carriersQuery, fetcher);
+
+  const notesQuery = id && store ? `/api/orders/${id}/notes?storeId=${store.id}` : null;
+  const { data: notes = [] } = useSWR<{ id: number; note: string; date_created: string }[]>(notesQuery, fetcher);
 
   const [orderStatus, setOrderStatus] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('paid');
@@ -86,7 +92,6 @@ export default function EditOrder() {
   const [internalNote, setInternalNote] = useState('');
   const [customerNote, setCustomerNote] = useState('');
   const [labels, setLabels] = useState('');
-  const [taskUser, setTaskUser] = useState('');
 
   useEffect(() => {
     if (data) {
@@ -132,6 +137,28 @@ export default function EditOrder() {
 
   const removeItem = (index: number) => {
     setItems(items.filter((_, i) => i !== index));
+  };
+
+  const updateOrderHandler = async () => {
+    if (!store || !id) return;
+    await fetch(`/api/orders/${id}?storeId=${store.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status: orderStatus,
+        shipping_company: carrier,
+        tracking_number: tracking,
+        items: items.map((it) => ({ product_id: it.productId, quantity: it.quantity })),
+        customer: {
+          name: customer.name,
+          email: customer.email,
+          phone: customer.phone,
+          billing: customer.billing,
+          delivery: customer.delivery,
+        },
+      }),
+    });
+    mutate();
   };
 
   if (status === 'loading') return null;
@@ -257,9 +284,11 @@ export default function EditOrder() {
                 <label className="block mb-1 text-sm">Carrier</label>
                 <select className="w-full" value={carrier} onChange={(e) => setCarrier(e.target.value)}>
                   <option value="">Select</option>
-                  <option value="ups">UPS</option>
-                  <option value="fedex">FedEx</option>
-                  <option value="dhl">DHL</option>
+                  {carriers.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -299,30 +328,29 @@ export default function EditOrder() {
               </div>
             </div>
           </section>
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={updateOrderHandler}
+              className="mt-2 px-4 py-2 rounded text-white bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400"
+            >
+              Update
+            </button>
+          </div>
         </div>
 
         <aside className="lg:w-80 space-y-6 mt-6 lg:mt-0">
           <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
-            <h2 className="text-xl font-semibold mb-4">Task</h2>
-            <select className="w-full" value={taskUser} onChange={(e) => setTaskUser(e.target.value)}>
-              <option value="">Assign user</option>
-              <option value="user1">User 1</option>
-              <option value="user2">User 2</option>
-            </select>
-          </section>
-          <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Order History</h2>
             <ul className="text-sm space-y-1">
-              <li>Order created</li>
-              <li>Status updated</li>
+              {notes.map((n) => (
+                <li key={n.id}>{n.note}</li>
+              ))}
             </ul>
           </section>
           <section className="bg-white dark:bg-gray-900 p-4 rounded shadow">
-            <h2 className="text-xl font-semibold mb-4">Automation</h2>
-            <ul className="text-sm space-y-1">
-              <li>Email sent</li>
-              <li>Stock synced</li>
-            </ul>
+            <h2 className="text-xl font-semibold mb-4">Shipment Tracking</h2>
+            <p className="text-sm">{tracking || 'No tracking number'}</p>
           </section>
         </aside>
       </div>

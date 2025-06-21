@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   fetchOrder as fetchWooOrder,
+  updateOrder,
   WooConfig,
 } from '../../../lib/integrations/woocommerceService';
 import { getServerSession } from 'next-auth/next';
@@ -96,26 +97,36 @@ export default async function handler(
     }
 
     if (req.method === 'PUT') {
-      const { status, shipping_company, tracking_number } = req.body || {};
-      return res
-        .status(200)
-        .json({
-          id: Number(id),
-          status: status || 'updated',
-          total: 0,
-          date_created: new Date().toISOString(),
-          shipping_company: shipping_company || '',
-          tracking_number: tracking_number || '',
-          customer: 'Updated',
-          payment_status: status === 'completed' ? 'paid' : 'unpaid',
-          shipping_status: status || 'updated',
-          items: [],
-          customer_name: 'Updated',
-          customer_email: '',
-          customer_phone: '',
-          billing: '',
-          delivery: '',
-        });
+      const {
+        status: newStatus,
+        shipping_company,
+        tracking_number,
+        items,
+        customer,
+      } = req.body || {};
+
+      const updated = await updateOrder(
+        Number(id),
+        {
+          status: newStatus,
+          line_items: items,
+          meta_data: tracking_number
+            ? [{ key: 'tracking_number', value: tracking_number }]
+            : undefined,
+          shipping_lines: shipping_company
+            ? [
+                {
+                  method_title: shipping_company,
+                  method_id: shipping_company,
+                  total: '0',
+                },
+              ]
+            : undefined,
+          ...(customer ? customer : {}),
+        },
+        config
+      );
+      return res.status(200).json(updated);
     }
 
     const order = await fetchWooOrder(Number(id), config);

@@ -193,3 +193,27 @@ export async function updateOrderStatus() {
   // Placeholder for updating order status
   return;
 }
+
+export async function fetchShippingMethods(
+  config?: Partial<WooConfig>
+): Promise<any[]> {
+  return fetchAll('shipping_methods', config);
+}
+
+export async function fetchOrderNotes(
+  id: number,
+  config?: Partial<WooConfig>
+): Promise<any[]> {
+  return request<any[]>(`orders/${id}/notes`, config);
+}
+
+export async function updateOrder(
+  id: number,
+  data: any,
+  config?: Partial<WooConfig>
+): Promise<any> {
+  return request<any>(`orders/${id}`, config, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
