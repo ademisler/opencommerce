@@ -133,6 +133,13 @@ export async function fetchOrders(config?: Partial<WooConfig>): Promise<any[]> {
   return fetchAll('orders', config);
 }
 
+export async function fetchOrder(
+  id: number,
+  config?: Partial<WooConfig>
+): Promise<any> {
+  return request<any>(`orders/${id}`, config);
+}
+
 export interface OrderItem {
   product_id: number;
   quantity: number;
