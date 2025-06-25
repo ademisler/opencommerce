@@ -139,7 +139,7 @@ export default function EditOrder() {
     }
   }, [data]);
 
-  const productsQuery = store ? `/api/products?storeId=${store.id}&page=1&perPage=50` : null;
+  const productsQuery = store ? `/api/products?storeId=${store.id}&all=true` : null;
   const { data: prodData } = useSWR<{ products: Product[]; total: number }>(productsQuery, fetcher);
   const products = prodData?.products || [];
   const [newProductId, setNewProductId] = useState<number | ''>('');

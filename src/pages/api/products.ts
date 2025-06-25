@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   fetchProductsPage as fetchWooProductsPage,
+  fetchProducts,
   WooConfig,
 } from '../../lib/integrations/woocommerceService';
 import { getServerSession } from 'next-auth/next';
@@ -79,18 +80,29 @@ export default async function handler(
       consumerSecret: store.secret,
     };
 
-    const { page = '1', perPage = '20', search = '' } = req.query as {
+    const { page = '1', perPage = '20', search = '', all } = req.query as {
       page?: string;
       perPage?: string;
       search?: string;
+      all?: string;
     };
 
-    const { items: wooProducts, total } = await fetchWooProductsPage(
-      Number(page),
-      Number(perPage),
-      search as string,
-      config
-    );
+    let wooProducts: any[] = [];
+    let total = 0;
+
+    if (all === 'true') {
+      wooProducts = await fetchProducts(config);
+      total = wooProducts.length;
+    } else {
+      const result = await fetchWooProductsPage(
+        Number(page),
+        Number(perPage),
+        search as string,
+        config
+      );
+      wooProducts = result.items;
+      total = result.total;
+    }
     const products: Product[] = wooProducts.map((p: any) => ({
       id: p.id,
       name: p.name,
