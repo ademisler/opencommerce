@@ -63,13 +63,13 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>{`${t('login')} - Fulexo`}</title>
+        <title>{`${t('login')} - OpenCommerce`}</title>
       </Head>
       <div className="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
         <div className="relative z-10 w-full max-w-md mx-auto">
           <div className="bg-gray-950/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8">
             <div className="text-center mb-6">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-wider text-white">Fulexo</h1>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-wider text-white">OpenCommerce</h1>
             </div>
             {error && <p className="mb-4 text-red-400 text-center text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="relative min-h-[160px] flex items-center">

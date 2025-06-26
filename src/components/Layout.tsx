@@ -34,7 +34,7 @@ const Layout: React.FC<Props> = ({ children, title }) => {
   return (
     <>
       <Head>
-        <title>{title ? `${title} - Fulexo` : 'Fulexo'}</title>
+        <title>{title ? `${title} - OpenCommerce` : 'OpenCommerce'}</title>
       </Head>
       <div className="min-h-screen flex flex-col bg-slate-50 text-gray-900 dark:bg-slate-950 dark:text-gray-100">
       {session && (
@@ -109,7 +109,7 @@ const Layout: React.FC<Props> = ({ children, title }) => {
       )}
       <main className="flex-1 p-4 container mx-auto">{children}</main>
       <footer className="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
-        © {new Date().getFullYear()} Fulexo
+        © {new Date().getFullYear()} OpenCommerce
       </footer>
       </div>
     </>

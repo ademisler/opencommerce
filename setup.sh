@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup script for Fulexo
+# Setup script for OpenCommerce
 
 # Copy .env.example to .env.local if it doesn't exist
 if [ ! -f .env.local ]; then
